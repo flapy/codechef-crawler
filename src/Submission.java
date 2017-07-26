@@ -1,6 +1,4 @@
-import java.util.Comparator;
-
-public class Submission implements Comparator<Submission> {
+public class Submission  {
     private Double score;
     private Double time;
     private Double memory;
@@ -45,9 +43,5 @@ public class Submission implements Comparator<Submission> {
 
     public void setScore(Double score) {
         this.score = score;
-    }
-
-    public int compare(Submission s1, Submission s2) {
-        return 0;
     }
 }

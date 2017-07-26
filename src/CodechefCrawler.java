@@ -145,7 +145,6 @@ public class CodechefCrawler {
                 if (fields.get(3).toString().contains("tick-icon.gif")) {
                     Submission submission = new Submission();
                     String str = fields.get(3).toString();
-                    System.out.println(str);
                     Pattern pattern = Pattern.compile("\\[.*pts]");
                     Matcher matcher = pattern.matcher(str);
                     String points = "";
