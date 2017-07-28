@@ -1,4 +1,3 @@
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import javafx.util.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -143,26 +142,34 @@ public class CodechefCrawler {
                 }
                 // First check if this row is AC.
                 if (fields.get(3).toString().contains("tick-icon.gif")) {
-                    Submission submission = new Submission();
-                    String str = fields.get(3).toString();
-                    Pattern pattern = Pattern.compile("\\[.*pts]");
-                    Matcher matcher = pattern.matcher(str);
-                    String points = "";
-                    if (matcher.find())
-                        points = matcher.group(0);
-                    if (!points.equals("")) {
-                        points = points.substring(1);
-                        points = points.substring(0, points.length() - 4).trim();
-                        submission.setScore(Double.parseDouble(points));
-                    } else {
-                        submission.setScore(100.0);
+                    String submissionId = fields.get(0).text().trim();
+                    String language = fields.get(6).text();
+                    try {
+                        Submission submission = new Submission();
+                        String str = fields.get(3).toString();
+                        Pattern pattern = Pattern.compile("\\[.*pts]");
+                        Matcher matcher = pattern.matcher(str);
+                        String points = "";
+                        if (matcher.find())
+                            points = matcher.group(0);
+                        if (!points.equals("")) {
+                            points = points.substring(1);
+                            points = points.substring(0, points.length() - 4).trim();
+                            submission.setScore(Double.parseDouble(points));
+                        } else {
+                            submission.setScore(100.0);
+                        }
+                        submission.setSubmissionId(Integer.parseInt(submissionId));
+                        submission.setLanguage(language);
+                        String memory = fields.get(5).text().trim();
+                        submission.setMemory(Double.parseDouble(memory.substring(0, memory.length() - 1)));
+                        submission.setTime(Double.parseDouble(fields.get(4).text().trim()));
+                        listOfACSubmissions.add(submission);
+                    } catch (Exception e) {
+                        System.out.println("Not Fetching Best Solution for " + problemCode + " " +
+                                "Due to Unknown Error");
+                        return new Pair<>(submissionId, language);
                     }
-                    submission.setSubmissionId(Integer.parseInt(fields.get(0).text().trim()));
-                    submission.setLanguage(fields.get(6).text());
-                    String memory = fields.get(5).text().trim();
-                    submission.setMemory(Double.parseDouble(memory.substring(0, memory.length() - 1)));
-                    submission.setTime(Double.parseDouble(fields.get(4).text().trim()));
-                    listOfACSubmissions.add(submission);
                 }
             }
         }
